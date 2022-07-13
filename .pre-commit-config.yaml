@@ -1,0 +1,43 @@
+# See https://pre-commit.com for more information
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-added-large-files
+    -   id: check-merge-conflict
+    -   id: check-executables-have-shebangs
+    -   id: check-shebang-scripts-are-executable
+    -   id: check-ast
+    -   id: check-toml
+    -   id: check-yaml
+        args: [--unsafe]
+-   repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.9.3
+    hooks:
+    -   id: uv-sync
+        name: Sync dependencies
+    -   id: uv-lock
+        name: Update lock file
+    -   id: uv-export
+        name: Export dependencies to requirements.txt
+        args:
+        - --frozen
+        - --output-file=requirements.txt
+        - --quiet
+        - --no-hashes
+        - --no-header
+        - --no-annotate
+        - --no-dev
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.0
+    hooks:
+    -   id: ruff-check
+        name: Lint with Ruff
+    -   id: ruff-format
+        name: Autoformat with Ruff
+-   repo: https://github.com/gitleaks/gitleaks
+    rev: v8.28.0
+    hooks:
+    -   id: gitleaks

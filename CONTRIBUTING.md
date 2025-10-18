@@ -16,7 +16,10 @@ git clone https://github.com/benfairless/openvoicepacks.git && cd openvoicepacks
 
 **Install dependencies:**
 ```bash
+# Python dependencies
 uv sync --dev
+# Pre-commit hooks
+uv run pre-commit install
 ```
 
 **Run tests:**

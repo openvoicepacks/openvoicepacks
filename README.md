@@ -1,4 +1,4 @@
-![image](assets/site/assets/logos/svg/horizontal-coral.svg)
+![image](docs/assets/logos/svg/horizontal-coral.svg)
 
 ![GitHub](https://img.shields.io/github/license/benfairless/openvoicepacks?style=flat-square)
 ![GitHub release](https://img.shields.io/github/v/release/benfairless/openvoicepacks?style=flat-square)

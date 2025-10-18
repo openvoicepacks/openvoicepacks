@@ -1,0 +1,178 @@
+site_name: OpenVoicePacks
+site_url: https://openvoicepacks.org
+site_author: Ben Fairless
+site_description: Generate and customize complete voice packs for OpenTX and EdgeTX radios.
+docs_dir: docs
+site_dir: site
+copyright: "© 2025 OpenVoicePacks · Built by the FPV community, for the FPV community."
+repo_url: https://github.com/openvoicepacks/openvoicepacks
+remote_branch: main
+edit_uri: edit/main/docs/
+use_directory_urls: true
+
+watch:
+  - src/
+  - docs/
+  - mkdocs.yml
+
+theme:
+  name: material
+  language: en
+  locale: en_GB
+  favicon: assets/images/favicon.png
+  logo: assets/logos/png/icon-coral.png
+  features:
+  - navigation.instant
+  - navigation.tracking
+  - navigation.tabs
+  - navigation.tabs.sticky
+  - navigation.top
+  - navigation.sections
+  - navigation.expand
+  - toc.integrate
+  - toc.follow
+  - content.code.copy
+  - content.tabs.link
+  font:
+    text: Inter
+    code: Roboto Mono
+  palette:
+    - scheme: openvoicepacks
+      media: "(prefers-color-scheme: light)"
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: openvoicepacks
+      media: "(prefers-color-scheme: dark)"
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+extra_css:
+  - assets/stylesheets/theme.css
+extra_javascript: []
+
+nav:
+  - User Guide:
+    - Overview: user-guide/overview.md
+    - Installation: user-guide/installation.md
+    - Getting started: user-guide/getting-started.md
+    - Configuration: user-guide/configuration.md
+    - Usage: user-guide/usage.md
+    - FAQ: user-guide/faq.md
+
+extra:
+  generator: false
+  social:
+  - icon: fontawesome/brands/github
+    link: https://github.com/openvoicepacks
+    name: GitHub
+  - icon: fontawesome/brands/python
+    link: https://pypi.org/user/openvoicepacks
+    name: PyPI
+  - icon: fontawesome/brands/docker
+    link: https://hub.docker.com/u/openvoicepacks
+    name: Docker Hub
+
+plugins:
+- privacy
+- search
+- mermaid2
+- minify:
+    cache_safe: true
+    minify_html: true
+    minify_js: true
+    minify_css: true
+    htmlmin_opts:
+        remove_comments: true
+    js_files: []
+    css_files:
+    - assets/stylesheets/theme.css
+- social:
+    cards_layout_options:
+      background_color: "#1E293B"
+      color: "#F04E4E"
+      font_family: "Inter"
+- mkdocstrings: # https://mkdocstrings.github.io/python/usage/
+    enable_inventory: true
+    handlers:
+      python:
+        paths: ["src"]
+        inventories:
+        - https://docs.python.org/3/objects.inv
+        allow_inspection: true
+        options:
+          summary: true
+          docstring_style: google
+          docstring_section_style: table
+          docstring_options:
+            ignore_init_summary: true
+            trim_doctest_flags: true
+          find_stubs_package: true
+          merge_init_into_class: true
+          inherited_members: true
+          parameter_headings: true
+          type_parameter_headings: true
+          line_length: 88
+          heading_level: 2
+          annotations_path: source
+          unwrap_overloads: true
+          show_bases: true
+          show_type_annotations: true
+          show_signature: true
+          show_signature_annotations: false
+          show_signature_type_parameters: true
+          show_attribute_values: true
+          show_overloads: false
+          show_root_heading: false
+          show_root_toc_entry: false
+          show_root_full_path: true
+          show_root_members_full_path: true
+          show_category_heading: false
+          group_by_category: true
+          signature_crossrefs: true
+          extensions: # https://mkdocstrings.github.io/griffe/
+          - griffe_pydantic: {schema: true}
+- mkdocs-autoapi: # https://github.com/jcayers20/mkdocs-autoapi
+    autoapi_add_nav_entry: API Reference
+    autoapi_dir: src/openvoicepacks/
+    autoapi_root: api/
+
+markdown_extensions: # https://squidfunk.github.io/mkdocs-material/reference/
+  - tables
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - pymdownx.arithmatex
+  - pymdownx.caret
+  - pymdownx.tilde
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.saneheaders
+  - pymdownx.smartsymbols
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.highlight:
+      pygments_style: autumn
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          # format: !!python/name:mermaid2.fence_mermaid_custom
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+      clickable_checkbox: false
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg

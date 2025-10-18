@@ -163,6 +163,20 @@ def version(command: Context, *, short: bool = False) -> None:
 
 
 @task
+def bump(command: Context) -> None:
+    """Bump package version."""
+    cmd = "cz bump"
+    command.run(cmd, pty=True)
+
+
+@task
+def commit(command: Context) -> None:
+    """Commit changes in Git using Commitizen."""
+    cmd = "cz commit"
+    command.run(cmd, pty=True)
+
+
+@task
 def publish(command: Context) -> None:
     """Publish package to remote repository."""
     command.run("uv publish", pty=True)

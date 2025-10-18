@@ -37,8 +37,9 @@ dev = [
     "pytest-spec (>=5.1.0,<6.0.0)",
     "python-magic (>=0.4.27,<0.5.0)",
     "invoke (>=2.2.0,<3.0.0)",
-    "ruff",
     "pre-commit>=4.3.0",
+    "commitizen>=4.9.1",
+    "ruff>=0.14.1",
 ]
 docs = [
     "griffe-pydantic>=1.1.8",
@@ -124,3 +125,11 @@ spec_header_format = "[{path}]"
 spec_test_format = "{result} {name} : {docstring_summary}"
 addopts = "--spec --cov-report=xml --cov-report=term"
 markers = ["slow: Marks tests as slow (deselect with '-m \"not slow\"')"]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_scheme = "pep440"
+version_provider = "uv"
+update_changelog_on_bump = true
+major_version_zero = true

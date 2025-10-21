@@ -144,7 +144,8 @@ def build(
         if sdist:
             cmd += " --sdist"
         command.run(cmd, pty=True)
-    # FIXME: Due to calling clean first, container build will always fail unless wheel or dist is also built.
+    # FIXME: Due to calling clean first, container build will always fail unless wheel
+    # or dist is also built.
     if container:
         command.run(
             f"{OCI_BUILDER} build -t {OCI_IMAGE_NAME}:$(uv version --short) .", pty=True

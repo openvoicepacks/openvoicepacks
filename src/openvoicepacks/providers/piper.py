@@ -22,7 +22,8 @@ class Piper(Provider):
     Provides speech synthesis using local Piper models.
 
     Attributes:
-        install_dir (str): Directory where Piper voice models are installed. Defaults to 'resources/piper'.
+        install_dir (str): Directory where Piper voice models are installed.
+            Defaults to '.cache/piper'.
     """
 
     provider: ClassVar[str] = "piper"
@@ -47,7 +48,7 @@ class Piper(Provider):
     #     # Return only the voice IDs with quality of medium
     #     filtered_list = list(
     #         filter(
-    #             lambda x: voices_dict[x].get("quality") == "medium", voices_dict.keys()
+    #             lambda x: voices_dict[x].get("qual") == "medium", voices_dict.keys()
     #         )
     #     )
 
@@ -77,10 +78,10 @@ class Piper(Provider):
 
         Args:
             text (str): The text phrase to be synthesised.
-            model (VoiceModel): The VoiceModel object representing the voice model to use.
+            model (VoiceModel): VoiceModel object representing the voice model to use.
 
         Returns:
-            AudioData: A AudioData object containing the audio byte data and sample rate.
+            AudioData: AudioData object containing the audio byte data and sample rate.
         """
         # FIXME: Format the model string correctly.
         language = model.language.replace("-", "_")  # Piper expects underscores

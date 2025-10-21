@@ -49,14 +49,15 @@ class Polly(Provider):
 
         Args:
             text (str): The (optionally SSML-enabled) text phrase to be synthesised.
-            model (VoiceModel): The VoiceModel object representing the voice model to use.
+            model (VoiceModel): VoiceModel object representing the voice model to use.
 
         Returns:
-            AudioData: A AudioData object containing the audio byte data and sample rate.
+            AudioData: AudioData object containing the audio byte data and sample rate.
         """
         # FIXME: SSML may not work with all voice engines. This may need to be moved to
         # the VoiceModel object so users can provide their own SSML when needed.
-        # NOTE: Now that we have the capabilities field, we can check if the voice supports SSML.
+        # NOTE: Now that we have the capabilities field, we can check if the voice
+        # supports SSML.
         # Regex to check string: (</*[a-z =_0-9"]+/*>)
         ssml = f'<speak>{text}<break strength="weak"/></speak>'
         sample_rate = 16000

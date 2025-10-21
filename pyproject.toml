@@ -88,7 +88,6 @@ ignore = [
     "FIX001", "FIX002", # FIXME comments are useful.
     "TD001", "TD002", "TD003", # TODO comments are useful.
     "ERA001", # Will remove commented-out code eventually. It's useful for now.
-    "E501", # Will enforce line length later.
     "EM101", # Allow string literals in excepts for now. Easier to read.
     "TRY003", # Allow long excepts for now. Easier to read.
     "D415", # Remove when module docstrings are improved.

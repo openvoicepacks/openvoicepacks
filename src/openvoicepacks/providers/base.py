@@ -21,7 +21,7 @@ class ProviderError(Exception):
 class Provider:
     """Base class for TTS providers.
 
-    All TTS provider classes should inherit from this and implement the synthesise method.
+    TTS provider classes should inherit from this and implement the synthesise method.
     """
 
     provider: ClassVar[str] = "generic"
@@ -46,7 +46,10 @@ class Provider:
         if not isinstance(model, VoiceModel):
             raise TypeError("Model must be a VoiceModel object")
         if model.provider != self.provider:
-            msg = f"Model must be compatible with this provider. Got '{model.provider}', expected '{self.provider}'"
+            msg = (
+                f"Model must be compatible with this provider."
+                f"Got '{model.provider}', expected '{self.provider}'"
+            )
             raise ValueError(msg)
 
     def synthesise(self, text: str, model: VoiceModel = None) -> AudioData:
@@ -54,7 +57,7 @@ class Provider:
 
         Args:
             text (str): The text phrase to be synthesised.
-            model (VoiceModel): The VoiceModel object representing the voice model to use.
+            model (VoiceModel): VoiceModel object representing the voice model to use.
 
         Returns:
             AudioData: AudioData object containing the audio byte data and sample rate.
@@ -76,7 +79,7 @@ class Provider:
         return self._synthesise(text, model)
 
     def _synthesise(self, text: str, model: VoiceModel) -> AudioData:
-        """Stub method for synthesising speech from text using the specified VoiceModel object.
+        """Stub method for synthesising speech from text using a VoiceModel object.
 
         Subclasses must implement this method and output an AudioData object.
         """

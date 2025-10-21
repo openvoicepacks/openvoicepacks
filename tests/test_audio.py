@@ -42,7 +42,7 @@ class TestAudioData:
         """Test suite for AudioData initialization."""
 
         def test_object_initialization(self, audio_data: AudioData) -> None:
-            """Given valid audio data, when initialized, then properties are set correctly."""
+            """Given valid audio data, when initialized, then properties are correct."""
             assert audio_data.data == WAV_CONFIG["data"], "Data does not match."
             assert audio_data.rate == WAV_CONFIG["rate"], "Rate does not match."
             assert audio_data.width == WAV_CONFIG["width"], "Width does not match."

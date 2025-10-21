@@ -119,7 +119,7 @@ class TestAllProviders:
         def test_write_wave(
             self, tmp_path: str, provider_config: dict[str, object]
         ) -> None:
-            """Given valid parameters, process() writes a valid WAV file to the given path."""
+            """Given valid parameters, process() writes valid WAV file to given path."""
             out_path = tmp_path / "test.wav"
             expected_type = provider_config["type"]
             provider_model = provider_config["model"]

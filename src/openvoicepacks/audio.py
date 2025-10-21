@@ -17,9 +17,12 @@ class AudioData:
 
     Args:
         data (bytes): The raw audio byte data.
-        rate (int, optional): The sample rate of the audio data. Defaults to 16000 Hz.
-        width (int, optional): The sample width in bytes. Defaults to 2 bytes (16-bit audio).
-        channels (int, optional): The number of audio channels. Defaults to 1 (mono).
+        rate (int, optional): The sample rate of the audio data.
+            Defaults to 16000 Hz.
+        width (int, optional): The sample width in bytes.
+            Defaults to 2 bytes (16-bit audio).
+        channels (int, optional): The number of audio channels.
+            Defaults to 1 (mono).
     """
 
     data: bytes
@@ -32,7 +35,8 @@ class AudioData:
 
         Args:
             file (str or Path): File path or file-like object to write audio data to.
-            output_rate (int, optional): The sample rate to write the audio data at. Defaults to 16000 Hz.
+            output_rate (int, optional): The sample rate to write the audio data at.
+                Defaults to 16000 Hz.
 
         Returns:
             str | Path: The file path or file-like object written to.

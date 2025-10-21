@@ -12,7 +12,7 @@ from openvoicepacks.voicemodel import VoiceModel
 
 
 class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=True):
-    """Represents a voice pack configuration for OpenVoicePacks, initialised from a dict.
+    """Represents voice pack configuration for OpenVoicePacks, initialised from a dict.
 
     This is the main wrapper class for voice packs in OpenVoicePacks. It holds metadata
     about the voice pack, a nested dictionary of sounds, and an optional VoiceModel
@@ -24,7 +24,7 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
         description (str): Voice pack description (optional).
         creator (str): Creator name (optional).
         contact (str): Contact information (optional).
-        packname (str): Filename (optional), defaults to name with spaces replaced by underscores.
+        packname (str): Filename (optional), defaults to name with underscores.
         model (VoiceModel | None): Optional VoiceModel configuration.
         sounds (dict): Nested dictionary of sounds.
         creation_date (datetime): Timestamp of creation.

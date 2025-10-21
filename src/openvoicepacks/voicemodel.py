@@ -49,11 +49,12 @@ from pydantic import BaseModel, field_validator
 class VoiceModel:
     """Wrapper for provider-specific voice models.
 
-    This class wraps around provider-specific voice model classes to provide a unified interface.
-    It delegates attribute access and methods to the underlying provider model.
+    This class wraps around provider-specific voice model classes to provide a unified
+    interface. It delegates attribute access and methods to the underlying provider
+    model.
 
     Arguments:
-        **data: The keyword arguments to initialize the appropriate provider-specific voice model.
+        **data: The keyword arguments to initialize the appropriate voice model.
 
     Attributes:
         _model (VoiceModelBase): The underlying provider-specific voice model instance.
@@ -123,8 +124,8 @@ class BaseVoiceModel(BaseModel):
         """
         lang_parts = v.replace("-", "_").split("_")
         lang_parts_expected = 2
-        # TODO: Check that parts are valid ISO codes. Should be two-letter ISO 639-1 for language and
-        # two-letter ISO 3166-1 alpha-2 for region.
+        # TODO: Check that parts are valid ISO codes. Should be two-letter ISO 639-1 for
+        # language and two-letter ISO 3166-1 alpha-2 for region.
         if len(lang_parts) != lang_parts_expected or not all(lang_parts):
             raise ValueError("language must be in the format 'xx_YY' or 'xx-YY'")
         return v
@@ -159,7 +160,8 @@ class PollyVoiceModel(BaseVoiceModel):
         voice (str): The voice name/ID.
         provider (str): The TTS provider, always 'polly' for this class.
         language (str): The language code in the format 'xx_YY' or 'xx-YY'.
-        option (str): The type of Polly model. One of 'standard', 'neural', 'long-form', 'generative'.
+        option (str): The type of Polly model.
+            One of 'standard', 'neural', 'long-form', 'generative'.
     """
 
     provider: str = "polly"
@@ -179,7 +181,8 @@ class PiperVoiceModel(BaseVoiceModel):
         voice (str): The voice name/ID.
         provider (str): The TTS provider, always 'piper' for this class.
         language (str): The language code in the format 'xx_YY' or 'xx-YY'.
-        option (str): The quality option for the Piper model. One of 'x_low', 'low', 'medium', 'high'.
+        option (str): The quality option for the Piper model.
+            One of 'x_low', 'low', 'medium', 'high'.
     """
 
     provider: str = "piper"

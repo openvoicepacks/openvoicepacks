@@ -91,7 +91,7 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
         return template.render(voicepack=self)
 
     def save(self, filename: str) -> str:
-        """Save the voice pack data to a YAML file.
+        """Save the voicepack data to a YAML file.
 
         Args:
             filename (str): The filename to save the voice pack to.
@@ -153,7 +153,7 @@ def voicepack_from_csv(csv_data: dict) -> VoicePack:
         else:
             data["sounds"][filename] = string
 
-    return VoicePack(**data)
+    return VoicePack.model_validate(data)
 
 
 def voicepack_from_yaml(yaml_data: dict) -> VoicePack:
@@ -166,4 +166,4 @@ def voicepack_from_yaml(yaml_data: dict) -> VoicePack:
         VoicePack: The converted VoicePack object.
     """
     data = yaml.safe_load(yaml_data)
-    return VoicePack(**data)
+    return VoicePack.model_validate(data)

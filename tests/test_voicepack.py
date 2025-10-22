@@ -105,6 +105,29 @@ class TestVoicePack:
                 assert item.path == exp["path"]
                 assert item.text == exp["text"]
 
+    class TestYAML:
+        """Tests for VoicePack YAML output."""
+
+        def test_yaml_output(self, sample_data: dict[str, str | int]) -> None:
+            """Given a VoicePack, yaml() returns expected YAML string."""
+            vp = VoicePack(**sample_data)
+            yaml_str = vp.yaml()
+            assert isinstance(yaml_str, str)
+            yaml_data = yaml.safe_load(yaml_str)
+            assert yaml_data["name"] == sample_data["name"]
+            assert yaml_data["description"] == sample_data["description"]
+            assert yaml_data["creator"] == sample_data["creator"]
+            assert yaml_data["contact"] == sample_data["contact"]
+
+        def test_yaml_schema(self, sample_data: dict[str, str | int]) -> None:
+            """Given a VoicePack, the YAML output conforms to the schema."""
+            vp = VoicePack(**sample_data)
+            yaml_str = vp.yaml()
+            yaml_data = yaml.safe_load(yaml_str)
+            # This will raise ValidationError if the schema does not match
+            model = VoicePack.model_validate(yaml_data)
+            assert model.name == sample_data["name"]
+
 
 class TestVoicePackFromCSV:
     """Tests for voicepack_from_csv utility."""

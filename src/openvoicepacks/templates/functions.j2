@@ -1,0 +1,17 @@
+{% macro nice_key(key, value, default) %}
+    {%- if value is not defined or value is none or value == '' -%}
+# {{ key }}: {{ default }}
+    {%- else -%}
+{{ key }}: {{ value }}
+    {%- endif -%}
+{% endmacro %}
+
+{% macro model_docs(voicemodel) %}
+  {%- if voicemodel.provider == 'piper' -%}
+# You can find more information about Piper voices here:
+# https://piper.readthedocs.io/en/latest/voices.html
+  {%- elif voicemodel.provider == 'polly' -%}
+# You can find more information about AWS Polly voices here:
+# https://docs.aws.amazon.com/polly/latest/dg/voicelist.html
+  {%- endif -%}
+{% endmacro %}

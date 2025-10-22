@@ -92,7 +92,7 @@ def test(command: Context, *, all_: bool, fix: bool) -> None:
 @task
 def dependencies(command: Context) -> None:
     """Install dependencies."""
-    command.run("uv sync --dev", pty=True)
+    command.run("uv sync --all-groups", pty=True)
 
 
 @task

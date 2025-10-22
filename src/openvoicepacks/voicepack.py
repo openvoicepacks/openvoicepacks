@@ -10,19 +10,21 @@ and YAML formats into VoicePack objects.
 
 import csv
 from datetime import UTC, datetime
+from pathlib import Path
 
 import yaml
 from pydantic import BaseModel, Field
 
+from openvoicepacks import template_env
 from openvoicepacks.audio import SoundFile
 from openvoicepacks.voicemodel import VoiceModel
 
 
 class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=True):
-    """Represents voice pack configuration for OpenVoicePacks, initialised from a dict.
+    """Represents voice pack configuration for OpenVoicePacks.
 
-    This is the main wrapper class for voice packs in OpenVoicePacks. It holds metadata
-    about the voice pack, a nested dictionary of sounds, and an optional VoiceModel
+    This is the main class for voice packs in OpenVoicePacks. It holds metadata about
+    the voice pack, a nested dictionary of sounds, and an optional VoiceModel
     configuration for TTS synthesis.
 
     Attributes:
@@ -42,7 +44,7 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
     description: str = ""
     creator: str = ""
     contact: str = ""
-    model: VoiceModel | None = None
+    model: dict | VoiceModel | None = None
     packname: str = Field(default_factory=lambda data: data["name"].replace(" ", "_"))
     sounds: dict = Field(default={}, repr=False)
     creation_date: datetime = Field(default=datetime.now(UTC), repr=False)
@@ -82,6 +84,30 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
         """
         # return self._flatten_sounds(self.sounds)
         return self._flatten_sounds(self.sounds)
+
+    def yaml(self) -> str:
+        """Return the voice pack data as a YAML document."""
+        template = template_env.get_template("voicepack.j2")
+        return template.render(voicepack=self)
+
+    def save(self, filename: str) -> str:
+        """Save the voice pack data to a YAML file.
+
+        Args:
+            filename (str): The filename to save the voice pack to.
+
+        The filename is derived from the packname attribute with a .yaml extension if
+        not specified.
+
+        Returns:
+            str: The filename the voice pack was saved to.
+        """
+        if not filename:
+            filename = f"{self.packname}.yaml"
+
+        with Path.open(filename, "w", encoding="utf-8") as f:
+            f.write(self.yaml())
+        return filename
 
 
 def voicepack_from_csv(csv_data: dict) -> VoicePack:

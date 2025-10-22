@@ -4,6 +4,7 @@ import logging
 import os
 
 import coloredlogs
+from jinja2 import Environment, PackageLoader, select_autoescape
 
 # Load settings from environment variables
 _environment = os.environ.get("OVP_ENVIRONMENT", "development")
@@ -17,3 +18,9 @@ for handler in logging.root.handlers[:]:
 # Install coloredlogs on the root logger
 _LOGFORMAT = "%(asctime)s [%(levelname)s] [%(name)s] %(message)s"
 coloredlogs.install(level=_loglevel, fmt=_LOGFORMAT)
+
+# Jinja2 template environment
+template_env = Environment(
+    loader=PackageLoader("openvoicepacks"),
+    autoescape=select_autoescape(),
+)

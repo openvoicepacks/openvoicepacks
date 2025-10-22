@@ -1,0 +1,35 @@
+
+{%- import 'functions.j2' as f -%}
+---
+# Schema version
+ovp_schema: {{ voicepack.ovp_schema }}
+
+# Voicepack Information
+name: {{ voicepack.name }}
+{{ f.nice_key('packname', voicepack.packname, "") }}
+{{ f.nice_key('description', voicepack.description, "You can provide a short description of your voice pack here.") }}
+{{ f.nice_key('creator', voicepack.creator, "Anonymous") }}
+{{ f.nice_key('contact', voicepack.contact, "Add an email address if you would like.") }}
+
+{%- if voicepack.model %}
+
+# Model configuration
+model:
+    {{ f.model_docs(voicepack.model) | indent(4) }}
+    {%- for key, value in voicepack.model.model_dump()| items %}
+    {{ key }}: {{ value }}
+    {%- endfor -%}
+{% endif %}
+
+
+{%- if voicepack.sounds %}
+
+# Sound definitions
+sounds:
+  {% for key, value in voicepack.sounds.items() %}
+  {{ key }}:
+    {% for key, value in value.items() %}
+    {{ key }}: {{ value }}
+    {% endfor %}
+  {% endfor %}
+{% endif %}

@@ -12,7 +12,7 @@ from urllib.request import urlopen
 def validate_file_path(file_path: str | Path) -> None:
     """Validate that the file path is a non-empty string or Path and writable.
 
-    Arguments:
+    Args:
         file_path (str | Path): The file path to validate.
 
     Raises:
@@ -37,7 +37,7 @@ def validate_file_path(file_path: str | Path) -> None:
 def json_from_url(url: str) -> dict | list:
     """Fetch and return JSON data from a given URL.
 
-    Arguments:
+    Args:
         url (str): The URL to fetch JSON data from.
 
     Returns:

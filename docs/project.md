@@ -86,6 +86,7 @@ https://github.com/aklajnert/mkdocs-simple-hooks
 https://github.com/six-two/mkdocs-placeholder-plugin
 https://lukasgeiter.github.io/mkdocs-awesome-nav/
 https://squidfunk.github.io/mkdocs-material/setup/setting-up-versioning/
+https://google.github.io/styleguide/pyguide.html
 
 ### Audio
 https://medium.com/python-other/three-ways-to-convert-the-sample-rate-of-an-wav-audio-file-to-16k-python-code-389e941cab8c
@@ -95,10 +96,6 @@ https://stackoverflow.com/questions/563022/whats-python-good-practice-for-import
 
 
 ## Technical improvements
-
-**Line Length**
-
-- Break up long lines (especially in docstrings and function calls) to fit within 88 characters.
 
 **Error Handling**
 
@@ -115,6 +112,7 @@ https://stackoverflow.com/questions/563022/whats-python-good-practice-for-import
 - Consider splitting large classes or modules if they grow too complex.
 - Use helper functions for repeated logic.
 - Consider moving providers and prover-specific VoiceModels to a plugin system.
+- Review docstrings, 'arguments' should be 'args' etc.
 
 **Dependency Management**
 

@@ -5,40 +5,6 @@ encapsulating attributes like voice name/ID, language, and any provider-specific
 options.
 
 It allows a standardised interface for interacting with different TTS providers.
-
-```mermaid
-classDiagram
-    class VoiceModel {
-        <<Interface>>
-        +_model: PiperVoiceModel or PollyVoiceModel
-        +__init__(**data)
-        +__getattr__(name)
-        +dict()
-    }
-    class BaseVoiceModel {
-        <<Abstract>>
-        +voice: str
-        +language: str
-        #valid_options: list
-        -validate_option(v: str) -> str
-    }
-    class PiperVoiceModel {
-        <<Abstract>>
-        +provider: str = "piper"
-        +option: str = "medium"
-        #valid_options: list
-    }
-    class PollyVoiceModel {
-        <<Abstract>>
-        +provider: str = "polly"
-        +option: str = "standard"
-        #valid_options: list
-    }
-    VoiceModel --> PiperVoiceModel : wraps
-    VoiceModel --> PollyVoiceModel : wraps
-    PiperVoiceModel --|> BaseVoiceModel : inherits
-    PollyVoiceModel --|> BaseVoiceModel : inherits
-```
 """
 
 from typing import ClassVar
@@ -53,7 +19,7 @@ class VoiceModel:
     interface. It delegates attribute access and methods to the underlying provider
     model.
 
-    Arguments:
+    Args:
         **data: The keyword arguments to initialize the appropriate voice model.
 
     Attributes:
@@ -113,7 +79,7 @@ class BaseVoiceModel(BaseModel):
 
         Accepts formats like 'en_GB' or 'en-GB'.
 
-        Arguments:
+        Args:
             v (str): The language code to validate.
 
         Returns:
@@ -137,7 +103,7 @@ class BaseVoiceModel(BaseModel):
 
         If no option is provided, the first valid option is used as the default.
 
-        Arguments:
+        Args:
             v (str): The option value to validate.
 
         Returns:

@@ -55,7 +55,7 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
         Key path is joined by '/' and directories are made uppercase to conform to
         EdgeTX/OpenTX conventions.
 
-        Arguments:
+        Args:
             d (dict): The current level of the sounds dictionary.
             parent_keys (list[str] | None): List of parent keys for path construction.
         """
@@ -87,7 +87,7 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
 def voicepack_from_csv(csv_data: dict) -> VoicePack:
     """Convert CSV data from EdgeTX/OpenTX community to a VoicePack object.
 
-    Arguments:
+    Args:
         csv_data (dict): The CSV data to convert.
 
     Returns:
@@ -133,7 +133,7 @@ def voicepack_from_csv(csv_data: dict) -> VoicePack:
 def voicepack_from_yaml(yaml_data: dict) -> VoicePack:
     """Convert YAML data to a VoicePack object.
 
-    Arguments:
+    Args:
         yaml_data (dict): The YAML data to convert.
 
     Returns:

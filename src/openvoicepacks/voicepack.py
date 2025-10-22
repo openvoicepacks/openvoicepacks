@@ -1,13 +1,20 @@
-"""Module for managing voice pack configurations.
+"""Module for managing voice pack configurations and supporting utilities.
 
 Voicepacks represent collections of sound/filename pairs, along with metadata used for
 packaging and distribution, and a VoiceModel configuration for TTS synthesis.
+
+This module includes the VoicePack class, which encapsulates all relevant data and
+methods for handling voice packs, as well as utility functions for converting from CSV
+and YAML formats into VoicePack objects.
 """
 
+import csv
 from datetime import UTC, datetime
 
+import yaml
 from pydantic import BaseModel, Field
 
+from openvoicepacks.sounds import SoundFile
 from openvoicepacks.voicemodel import VoiceModel
 
 
@@ -42,11 +49,15 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
 
     def _flatten_sounds(
         self, d: dict, parent_keys: list[str] | None = None
-    ) -> list[tuple[str, str]]:
-        """Recursively flattens a nested dict into a list of (key_path, value) tuples.
+    ) -> list["SoundFile"]:
+        """Recursively flattens a nested dict into a list of SoundFile objects.
 
         Key path is joined by '/' and directories are made uppercase to conform to
         EdgeTX/OpenTX conventions.
+
+        Arguments:
+            d (dict): The current level of the sounds dictionary.
+            parent_keys (list[str] | None): List of parent keys for path construction.
         """
         if parent_keys is None:
             parent_keys = []
@@ -59,15 +70,74 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
             new_keys = [*parent_keys, key_str]
             if isinstance(v, dict):
                 items.extend(self._flatten_sounds(v, new_keys))
-            else:
+            elif isinstance(v, str):
                 key_path = "/".join(new_keys)
-                items.append((key_path, v))
+                items.append(SoundFile(path=key_path, text=v))
         return items
 
-    def worklist(self) -> list[tuple[str, str]]:
+    def worklist(self) -> list[SoundFile]:
         """Return a flattened list of all sounds in the voice pack.
 
-        Each item is a tuple of (key_path, value) where key_path is the
-        full path to the sound joined by '/'.
+        Each item is a SoundFile object representing the sound.
         """
+        # return self._flatten_sounds(self.sounds)
         return self._flatten_sounds(self.sounds)
+
+
+def voicepack_from_csv(csv_data: dict) -> VoicePack:
+    """Convert CSV data from EdgeTX/OpenTX community to a VoicePack object.
+
+    Arguments:
+        csv_data (dict): The CSV data to convert.
+
+    Returns:
+        VoicePack: The converted VoicePack object.
+
+    Raises:
+        ValueError: If the CSV data is not formatted correctly.
+    """
+    # Since the CSV format does not include metadata, we set some defaults.
+    data = {
+        "ovp_schema": 1,
+        "name": "Unnamed",
+        "description": "Imported from CSV",
+        "sounds": {},
+    }
+
+    # Load CSV data as a list of dicts where each field is a key.
+    csv_dict = csv.DictReader(csv_data)
+
+    # Check CSV data is in the correct format.
+    required_fields = ["Filename", "Path", "Translation"]
+    for field in required_fields:
+        if field not in csv_dict.fieldnames:
+            raise ValueError("CSV not formatted correctly")
+
+    # Convert the CSV data into the standard OSP format.
+    for row in csv_dict:
+        filename = row.get("Filename").replace(".wav", "")
+        string = row.get("Translation")
+        path = row.get("Path").lower()
+
+        # If there is a path attribute set, nest the values inside that.
+        if len(path) > 0:
+            if path not in data["sounds"]:
+                data["sounds"][path] = {}
+            data["sounds"][path][filename] = string
+        else:
+            data["sounds"][filename] = string
+
+    return VoicePack(**data)
+
+
+def voicepack_from_yaml(yaml_data: dict) -> VoicePack:
+    """Convert YAML data to a VoicePack object.
+
+    Arguments:
+        yaml_data (dict): The YAML data to convert.
+
+    Returns:
+        VoicePack: The converted VoicePack object.
+    """
+    data = yaml.safe_load(yaml_data)
+    return VoicePack(**data)

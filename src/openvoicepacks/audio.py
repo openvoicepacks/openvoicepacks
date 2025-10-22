@@ -1,4 +1,4 @@
-"""openvoicepacks/audio.py"""
+"""Module for audio data handling in OpenVoicePacks."""
 
 import logging
 from dataclasses import dataclass
@@ -7,6 +7,7 @@ from pathlib import Path
 from pydub import AudioSegment
 
 from openvoicepacks.utils import validate_file_path
+from openvoicepacks.voicemodel import VoiceModel
 
 _logger = logging.getLogger(__name__)
 
@@ -61,3 +62,25 @@ class AudioData:
         )
         _logger.debug('Wrote audio data to "%s"', str(file))
         return file
+
+
+@dataclass
+class SoundFile:
+    """Represents a single sound asset, including text, audio, and path.
+
+    Attributes:
+        path: Relative path for output (e.g. "EN/hello.wav").
+        text: Text to synthesize.
+        audio: Audio data for the sound.
+        voicemodel: Voice model used for synthesis.
+    """
+
+    path: str
+    text: str
+    audio: AudioData | None = None
+    voicemodel: VoiceModel | None = None
+
+    def __repr__(self) -> str:
+        """Return a string representation of the SoundFile."""
+        audio_status = "yes" if self.audio else "no"
+        return f"<SoundFile path={self.path!r} text={self.text!r} audio={audio_status}>"

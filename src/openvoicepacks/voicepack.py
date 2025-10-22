@@ -14,7 +14,7 @@ from datetime import UTC, datetime
 import yaml
 from pydantic import BaseModel, Field
 
-from openvoicepacks.sounds import SoundFile
+from openvoicepacks.audio import SoundFile
 from openvoicepacks.voicemodel import VoiceModel
 
 

@@ -12,7 +12,7 @@ from textwrap import dedent
 import pytest
 import yaml
 
-from openvoicepacks.sounds import SoundFile
+from openvoicepacks.audio import SoundFile
 from openvoicepacks.voicepack import VoicePack, voicepack_from_csv, voicepack_from_yaml
 
 

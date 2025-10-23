@@ -38,6 +38,7 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
         model (VoiceModel | None): Optional VoiceModel configuration.
         sounds (dict): Nested dictionary of sounds.
         creation_date (datetime): Timestamp of creation.
+        based_on (list[str]): Optional reference to parent voice packs.
     """
 
     name: str
@@ -49,6 +50,7 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
     packname: str = Field(default_factory=lambda data: data["name"].replace(" ", "_"))
     sounds: dict = Field(default={}, repr=False)
     creation_date: datetime = Field(default=datetime.now(UTC), repr=False)
+    based_on: list[str] = Field(default=[], repr=False)
 
     @field_validator("packname", mode="after")
     @classmethod
@@ -118,6 +120,7 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
         Returns:
             str: The filename the voice pack was saved to.
         """
+        # Default filename to packname.yaml if not specified.
         if not filename:
             filename = f"{self.packname}.yaml"
 
@@ -154,6 +157,7 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
             return result
 
         self.sounds = merge_dicts(self.sounds, parent.sounds)
+        self.based_on.append(parent.packname)
 
 
 def voicepack_from_csv(csv_data: dict) -> VoicePack:

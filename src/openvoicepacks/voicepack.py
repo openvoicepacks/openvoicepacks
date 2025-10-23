@@ -9,6 +9,7 @@ and YAML formats into VoicePack objects.
 """
 
 import csv
+import io
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -174,6 +175,9 @@ def voicepack_from_csv(csv_data: dict) -> VoicePack:
         "description": "Imported from CSV",
         "sounds": {},
     }
+
+    if isinstance(csv_data, str):
+        csv_data = io.StringIO(csv_data)
 
     # Load CSV data as a list of dicts where each field is a key.
     csv_dict = csv.DictReader(csv_data)

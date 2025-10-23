@@ -212,10 +212,10 @@ class TestVoicePackFromCSV:
     def test_valid_csv(self) -> None:
         """Given valid CSV data, returns a VoicePack object with expected fields."""
         csv_content = dedent("""\
-            Filename,Path,Translation
-            morning.wav,,Morning
-            afternoon.wav,alerts,Afternoon
-            night.wav,alerts,Night
+            "String ID","Source text","Filename","Path","Translation"
+            "1","0","morning.wav","","Morning"
+            "2","1","afternoon.wav","alerts","Afternoon"
+            "3","1","night.wav","alerts","Night"
         """)
         csv_data = io.StringIO(csv_content)
         vp = voicepack_from_csv(csv_data)
@@ -226,7 +226,7 @@ class TestVoicePackFromCSV:
 
     def test_missing_field(self) -> None:
         """Given CSV missing required fields, raises ValueError."""
-        bad_csv = """Filename,Translation\nhello.wav,Hello\n"""
+        bad_csv = """"Filename","Translation"\nhello.wav,Hello\n"""
         csv_data = io.StringIO(bad_csv)
         with pytest.raises(ValueError, match="CSV not formatted correctly"):
             voicepack_from_csv(csv_data)

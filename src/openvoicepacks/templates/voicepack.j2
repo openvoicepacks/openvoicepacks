@@ -21,15 +21,10 @@ model:
     {%- endfor -%}
 {% endif %}
 
-
 {%- if voicepack.sounds %}
 
-# Sound definitions
 sounds:
-  {% for key, value in voicepack.sounds.items() %}
-  {{ key }}:
-    {% for key, value in value.items() %}
-    {{ key }}: {{ value }}
-    {% endfor %}
-  {% endfor %}
-{% endif %}
+# Sound definitions.
+# Nested sounds are added to subfolders in the voice pack.
+{{ f.deep_dict(voicepack.sounds) | indent(4) -}}
+{%- endif -%}

@@ -72,7 +72,7 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
             new_keys = [*parent_keys, key_str]
             if isinstance(v, dict):
                 items.extend(self._flatten_sounds(v, new_keys))
-            elif isinstance(v, str):
+            else:
                 key_path = "/".join(new_keys)
                 items.append(SoundFile(path=key_path, text=v))
         return items
@@ -90,7 +90,7 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
         template = template_env.get_template("voicepack.j2")
         return template.render(voicepack=self)
 
-    def save(self, filename: str) -> str:
+    def save(self, filename: str | None = None) -> str:
         """Save the voicepack data to a YAML file.
 
         Args:

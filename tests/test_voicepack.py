@@ -7,6 +7,7 @@ Current tests:
 
 import io
 from datetime import datetime
+from pathlib import Path
 from textwrap import dedent
 
 import pytest
@@ -127,6 +128,44 @@ class TestVoicePack:
             # This will raise ValidationError if the schema does not match
             model = VoicePack.model_validate(yaml_data)
             assert model.name == sample_data["name"]
+
+    class TestSave:
+        """Tests for VoicePack save method."""
+
+        @pytest.fixture
+        def tmp_file_path(self, tmp_path: str) -> str:
+            """Temporary file path for testing save."""
+            return str(tmp_path / "test_voicepack.yaml")
+
+        @pytest.fixture
+        def default_file_path(self, sample_data: dict[str, str | int]) -> str:
+            """Default file path derived from packname."""
+            packname = f"{sample_data['name'].replace(' ', '_')}.yaml"
+            yield packname
+            Path(packname).unlink(missing_ok=True)
+
+        def test_save_creates_file(
+            self, sample_data: dict[str, str | int], tmp_file_path: str
+        ) -> None:
+            """Given a filename, save() creates a YAML file."""
+            vp = VoicePack(**sample_data)
+            saved_path = vp.save(tmp_file_path)
+            assert saved_path == tmp_file_path
+            with Path.open(saved_path, encoding="utf-8") as f:
+                yaml_data = yaml.safe_load(f.read())
+            assert yaml_data["name"] == sample_data["name"]
+
+        # TODO: Add test for default filename when none provided.
+        def test_save_default_filename(
+            self, sample_data: dict[str, str | int], default_file_path: str
+        ) -> None:
+            """Given no filename, save() uses default derived from packname."""
+            vp = VoicePack(**sample_data)
+            saved_path = vp.save()
+            assert saved_path == default_file_path
+            with Path.open(saved_path, encoding="utf-8") as f:
+                yaml_data = yaml.safe_load(f.read())
+            assert yaml_data["name"] == sample_data["name"]
 
 
 class TestVoicePackFromCSV:

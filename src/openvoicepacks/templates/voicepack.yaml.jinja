@@ -1,5 +1,5 @@
 
-{%- import 'functions.j2' as f -%}
+{%- import 'functions.jinja' as f -%}
 ---
 # Schema version
 ovp_schema: {{ voicepack.ovp_schema }}
@@ -13,9 +13,8 @@ name: {{ voicepack.name }}
 
 {%- if voicepack.model %}
 
-# Model configuration
-model:
-    {{ f.model_docs(voicepack.model) | indent(4) }}
+model: # Model configuration
+{{ f.model_docs(voicepack.model) }}
     {%- for key, value in voicepack.model.model_dump()| items %}
     {{ key }}: {{ value }}
     {%- endfor -%}
@@ -23,8 +22,7 @@ model:
 
 {%- if voicepack.sounds %}
 
-sounds:
-# Sound definitions.
+sounds: # Sound definitions.
 # Nested sounds are added to subfolders in the voice pack.
 {{ f.deep_dict(voicepack.sounds) | indent(4) -}}
 {%- endif -%}

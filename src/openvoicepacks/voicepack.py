@@ -105,7 +105,7 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
 
     def yaml(self) -> str:
         """Return the voice pack data as a YAML document."""
-        template = template_env.get_template("voicepack.j2")
+        template = template_env.get_template("voicepack.yaml.jinja")
         return template.render(voicepack=self)
 
     def save(self, filename: str | None = None) -> str:

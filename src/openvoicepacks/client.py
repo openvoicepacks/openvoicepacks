@@ -21,6 +21,3 @@ def version(short: bool) -> None:  # NOQA: FBT001
 
 
 ovp.add_command(version)
-
-if __name__ == "__main__":
-    ovp()

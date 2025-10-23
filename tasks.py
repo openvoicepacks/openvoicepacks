@@ -173,7 +173,7 @@ def bump(command: Context) -> None:
 @task
 def commit(command: Context) -> None:
     """Commit changes in Git using Commitizen."""
-    cmd = "cz commit"
+    cmd = "cz commit -- --signoff"
     command.run(cmd, pty=True)
 
 

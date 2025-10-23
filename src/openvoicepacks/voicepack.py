@@ -124,6 +124,36 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
             f.write(self.yaml())
         return filename
 
+    def merge(self, parent: object) -> None:
+        """Merge another VoicePack into this one.
+
+        Args:
+            parent (VoicePack): The parent VoicePack to merge from.
+
+        The sounds from the parent VoicePack are merged into this one. Existing sounds
+        in this VoicePack take precedence over those in the parent.
+        """
+
+        def merge_dicts(primary: dict, parent: dict) -> dict:
+            """Recursively merge two nested dictionaries.
+
+            Args:
+                primary (dict): The first dictionary (takes precedence).
+                parent (dict): The second dictionary.
+
+            Returns:
+                dict: The merged dictionary.
+            """
+            result = dict(parent)  # Start with parent's keys and values
+            for k, v in primary.items():
+                if k in result and isinstance(result[k], dict) and isinstance(v, dict):
+                    result[k] = merge_dicts(v, result[k])
+                else:
+                    result[k] = v
+            return result
+
+        self.sounds = merge_dicts(self.sounds, parent.sounds)
+
 
 def voicepack_from_csv(csv_data: dict) -> VoicePack:
     """Convert CSV data from EdgeTX/OpenTX community to a VoicePack object.

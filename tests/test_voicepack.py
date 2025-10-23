@@ -59,12 +59,12 @@ class TestVoicePack:
         def test_flat_sounds(self) -> None:
             """Given flat sounds dict, worklist returns correct list."""
             sounds = {
-                "greeting": "hello.wav",
-                "farewell": "goodbye.wav",
+                "greeting": "hello",
+                "farewell": "goodbye",
             }
             expected = [
-                {"path": "greeting", "text": "hello.wav"},
-                {"path": "farewell", "text": "goodbye.wav"},
+                {"path": "greeting", "text": "hello"},
+                {"path": "farewell", "text": "goodbye"},
             ]
             vp = VoicePack(name="test", sounds=sounds)
             worklist = vp.worklist()
@@ -155,7 +155,6 @@ class TestVoicePack:
                 yaml_data = yaml.safe_load(f.read())
             assert yaml_data["name"] == sample_data["name"]
 
-        # TODO: Add test for default filename when none provided.
         def test_save_default_filename(
             self, sample_data: dict[str, str | int], default_file_path: str
         ) -> None:
@@ -166,6 +165,45 @@ class TestVoicePack:
             with Path.open(saved_path, encoding="utf-8") as f:
                 yaml_data = yaml.safe_load(f.read())
             assert yaml_data["name"] == sample_data["name"]
+
+    class TestMerge:
+        """Tests for VoicePack merge method."""
+
+        def test_merge_voicepacks(self) -> None:
+            """Given two VoicePacks, merge() combines their sounds correctly."""
+            parent_sounds = {
+                "greeting": "hello",
+                "farewell": "goodbye",
+                "alerts": {
+                    "low_battery": "battery low",
+                    "signal_lost": "signal lost",
+                },
+            }
+            child_sounds = {
+                "greeting": "hi",  # This should override parent's greeting
+                "notifications": {
+                    "message_received": "you have a message",
+                },
+                "alerts": {
+                    "custom_alert": "custom alert",
+                },
+            }
+            expected_sounds = {
+                "greeting": "hi",  # Child's greeting takes precedence
+                "farewell": "goodbye",
+                "alerts": {
+                    "low_battery": "battery low",
+                    "signal_lost": "signal lost",
+                    "custom_alert": "custom alert",
+                },
+                "notifications": {
+                    "message_received": "you have a message",
+                },
+            }
+            parent_vp = VoicePack(name="parent", sounds=parent_sounds)
+            child_vp = VoicePack(name="child", sounds=child_sounds)
+            child_vp.merge(parent_vp)
+            assert child_vp.sounds == expected_sounds
 
 
 class TestVoicePackFromCSV:

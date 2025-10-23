@@ -17,7 +17,7 @@ from pydantic import BaseModel, Field
 
 from openvoicepacks import template_env
 from openvoicepacks.audio import SoundFile
-from openvoicepacks.voicemodel import VoiceModel
+from openvoicepacks.voicemodels import VoiceModel
 
 
 class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=True):

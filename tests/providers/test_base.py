@@ -12,7 +12,7 @@ Current tests:
 import pytest
 
 from openvoicepacks.providers import Provider
-from openvoicepacks.voicemodel import VoiceModel
+from openvoicepacks.voicemodels import VoiceModel
 
 
 @pytest.fixture

@@ -7,7 +7,7 @@ from pathlib import Path
 from pydub import AudioSegment
 
 from openvoicepacks.utils import validate_file_path
-from openvoicepacks.voicemodel import VoiceModel
+from openvoicepacks.voicemodels import VoiceModel
 
 _logger = logging.getLogger(__name__)
 

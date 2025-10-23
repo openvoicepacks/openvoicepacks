@@ -9,7 +9,7 @@ import logging
 from typing import ClassVar
 
 from openvoicepacks.audio import AudioData
-from openvoicepacks.voicemodel import VoiceModel
+from openvoicepacks.voicemodels import VoiceModel
 
 _logger = logging.getLogger(__name__)
 

@@ -19,7 +19,7 @@ from copy import deepcopy
 import pytest
 from pydantic_core import ValidationError
 
-from openvoicepacks.voicemodel import (
+from openvoicepacks.voicemodels import (
     PiperVoiceModel,
     PollyVoiceModel,
     VoiceModel,

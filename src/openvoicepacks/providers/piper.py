@@ -9,7 +9,7 @@ import piper.download_voices
 
 from openvoicepacks.audio import AudioData
 from openvoicepacks.utils import json_from_url
-from openvoicepacks.voicemodel import VoiceModel
+from openvoicepacks.voicemodels import VoiceModel
 
 from .base import Provider, ProviderError
 

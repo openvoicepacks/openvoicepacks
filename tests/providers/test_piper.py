@@ -12,7 +12,7 @@ import pytest
 
 from openvoicepacks.audio import AudioData
 from openvoicepacks.providers import Piper, ProviderError
-from openvoicepacks.voicemodel import VoiceModel
+from openvoicepacks.voicemodels import VoiceModel
 
 
 class TestPiper:

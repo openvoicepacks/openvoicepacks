@@ -6,7 +6,7 @@ from typing import ClassVar
 import boto3
 
 from openvoicepacks.audio import AudioData
-from openvoicepacks.voicemodel import VoiceModel
+from openvoicepacks.voicemodels import VoiceModel
 
 from .base import Provider
 

@@ -13,7 +13,7 @@ import botocore.exceptions
 import pytest
 
 from openvoicepacks.providers import Polly
-from openvoicepacks.voicemodel import VoiceModel
+from openvoicepacks.voicemodels import VoiceModel
 
 
 class TestPolly:

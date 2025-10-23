@@ -11,7 +11,7 @@ dist/
 .pytest_cache/
 .cache/
 .coverage
-coverage.*
+coverage.xml
 
 # Environments
 .venv/

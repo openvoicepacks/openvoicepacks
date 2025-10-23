@@ -15,4 +15,4 @@ RUN pip install /tmp/openvoicepacks*.whl --root-user-action ignore --compile --n
 
 USER openvoicepacks
 WORKDIR /opt/openvoicepacks
-ENTRYPOINT [ "/usr/local/bin/python", "-m", "openvoicepacks" ]
+ENTRYPOINT [ "/usr/local/bin/openvoicepacks" ]

@@ -25,4 +25,6 @@ model: # Model configuration
 sounds: # Sound definitions.
 # Nested sounds are added to subfolders in the voice pack.
 {{ f.deep_dict(voicepack.sounds) | indent(4) -}}
-{%- endif -%}
+{%- endif %}
+
+# Created with {{ f.version() }}

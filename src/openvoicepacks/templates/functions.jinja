@@ -1,3 +1,7 @@
+{% macro version() -%}
+{{ metadata["name"] }} {{ metadata["version"] }}
+{%- endmacro -%}
+
 {% macro nice_key(key, value, default) %}
     {%- if value is not defined or value is none or value == '' -%}
 # {{ key }}: {{ default }}

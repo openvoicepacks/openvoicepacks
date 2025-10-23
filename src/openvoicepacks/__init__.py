@@ -2,12 +2,15 @@
 
 import logging
 import os
+from importlib.metadata import metadata as meta
 
 import coloredlogs
 from jinja2 import Environment, PackageLoader, select_autoescape
 
+# Package metadata, originates from pyproject.toml
+metadata = meta("openvoicepacks")
+
 # Load settings from environment variables
-_environment = os.environ.get("OVP_ENVIRONMENT", "development")
 _loglevel = os.environ.get("OVP_LOG_LEVEL", "INFO").upper()
 os.environ["PYDANTIC_ERRORS_INCLUDE_URL"] = "1"
 
@@ -24,3 +27,4 @@ template_env = Environment(
     loader=PackageLoader("openvoicepacks"),
     autoescape=select_autoescape(),
 )
+template_env.globals = {"metadata": metadata}

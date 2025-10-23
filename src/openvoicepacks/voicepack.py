@@ -13,7 +13,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import yaml
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from openvoicepacks import template_env
 from openvoicepacks.audio import SoundFile
@@ -48,6 +48,21 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
     packname: str = Field(default_factory=lambda data: data["name"].replace(" ", "_"))
     sounds: dict = Field(default={}, repr=False)
     creation_date: datetime = Field(default=datetime.now(UTC), repr=False)
+
+    @field_validator("packname", mode="after")
+    @classmethod
+    def _packname(cls, v: str) -> str:
+        """Ensure the packname is valid and properly formatted.
+
+        Args:
+            v (str): The packname to validate.
+
+        Returns:
+            str: The validated packname.
+        """
+        v = v.replace(" ", "_").lower()  # Replace spaces with underscores and lowercase
+        p = Path(v)
+        return p.with_suffix("").name  # Ensure no file extension
 
     def _flatten_sounds(
         self, d: dict, parent_keys: list[str] | None = None

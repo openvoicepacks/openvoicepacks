@@ -1,4 +1,4 @@
-"""AWS Polly TTS provider for OpenVoicePacks."""
+"""AWS Polly TTS provider plugin for OpenVoicePacks."""
 
 import logging
 from typing import ClassVar
@@ -6,9 +6,8 @@ from typing import ClassVar
 import boto3
 
 from openvoicepacks.audio import AudioData
+from openvoicepacks.providers.base import Provider
 from openvoicepacks.voicemodels import VoiceModel
-
-from .base import Provider
 
 _logger = logging.getLogger(__name__)
 
@@ -76,3 +75,6 @@ class Polly(Provider):
         # Return the audio data as a AudioData object (16-bit PCM)
         _logger.info('Successfully completed synthesis of "%s".', text)
         return AudioData(data=response["AudioStream"].read(), rate=sample_rate)
+
+
+PROVIDER = Polly

@@ -1,4 +1,4 @@
-"""Piper TTS provider for OpenVoicePacks."""
+"""Piper TTS provider plugin for OpenVoicePacks."""
 
 import logging
 from pathlib import Path
@@ -8,10 +8,9 @@ import piper
 import piper.download_voices
 
 from openvoicepacks.audio import AudioData
+from openvoicepacks.providers.base import Provider, ProviderError
 from openvoicepacks.utils import json_from_url
 from openvoicepacks.voicemodels import VoiceModel
-
-from .base import Provider, ProviderError
 
 _logger = logging.getLogger(__name__)
 
@@ -133,3 +132,6 @@ class Piper(Provider):
         install_dir: Path = Path(self.install_dir)
         install_dir.mkdir(parents=True, exist_ok=True)
         piper.download_voices.download_voice(model_name, download_dir=install_dir)
+
+
+PROVIDER = Piper

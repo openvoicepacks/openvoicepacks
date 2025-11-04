@@ -7,11 +7,13 @@ options.
 It allows a standardised interface for interacting with different TTS providers.
 """
 
+from dataclasses import dataclass
 from typing import ClassVar
 
 from pydantic import BaseModel, field_validator
 
 
+@dataclass
 class VoiceModel:
     """Wrapper for provider-specific voice models.
 

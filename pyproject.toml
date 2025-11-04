@@ -110,6 +110,9 @@ convention = "google"
     "SLF001", # Allow access to private members.
     "PLR2004", # Allow magic values as they improve readability.
 ]
+"src/openvoicepacks/plugins/*.py" = [
+    "INP001", # Allow implicit plugin registration.
+]
 
 [tool.coverage.run]
 branch = true

@@ -11,7 +11,6 @@ from openvoicepacks.utils import metadata
 
 # Load settings from environment variables
 _loglevel = os.environ.get("OVP_LOG_LEVEL", "INFO").upper()
-os.environ["PYDANTIC_ERRORS_INCLUDE_URL"] = "1"
 
 # Remove any default handlers
 for handler in logging.root.handlers[:]:

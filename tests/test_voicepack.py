@@ -126,7 +126,7 @@ class TestVoicePack:
             yaml_str = vp.yaml()
             yaml_data = yaml.safe_load(yaml_str)
             # This will raise ValidationError if the schema does not match
-            model = VoicePack.model_validate(yaml_data)
+            model = VoicePack(**yaml_data)
             assert model.name == sample_data["name"]
 
     class TestSave:

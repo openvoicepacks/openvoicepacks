@@ -5,28 +5,51 @@ All providers should inherit from this class and implement the synthesise method
 
 """
 
-import logging
-from typing import ClassVar
+from typing import ClassVar, Protocol
 
 from openvoicepacks.audio import AudioData
-from openvoicepacks.voicemodels import VoiceModel
-
-_logger = logging.getLogger(__name__)
 
 
-class ProviderError(Exception):
-    """Custom exception for provider-related errors."""
+class VoiceModelProtocol(Protocol):
+    """Protocol for VoiceModel objects used by TTS providers.
+
+    This is used to ensure that all voice models have a consistent interface.
+
+    Attributes:
+        provider (str): The name of the TTS provider.
+        voice (str): The voice identifier.
+        language (str): The language code.
+        option (str): Additional provider-specific options.
+        extras (dict): Additional provider-specific parameters.
+    """
+
+    provider: str
+    voice: str
+    language: str
+    option: str
+    extras: dict
 
 
 class Provider:
     """Base class for TTS providers.
 
-    TTS provider classes should inherit from this and implement the synthesise method.
+    TTS provider classes should inherit from this and implement the _synthesise method
+    as well as update the class variables.
+
+    Class attributes:
+        name (str): Name of the provider.
+        description (str): Description of the provider.
+        version (str): Version of the provider.
+        provider (str): Unique identifier for the provider.
+        capabilities (set): Set of capabilities supported by the provider.
     """
 
+    description: ClassVar[str] = "A generic text-to-speech provider."
+    version: ClassVar[str] = "local"
     provider: ClassVar[str] = "generic"
     capabilities: ClassVar[set[str]] = set()
-    model: VoiceModel | None = None
+    valid_options: ClassVar[set[str]] = {"standard"}
+    default_option: ClassVar[str] = "standard"
 
     def check_text(self, text: str) -> None:
         """Check if the provided text is valid.
@@ -37,22 +60,20 @@ class Provider:
         if not isinstance(text, str) or len(text) == 0:
             raise ValueError("Text must be a non-empty string")
 
-    def check_model(self, model: VoiceModel) -> None:
+    def check_model(self, model: VoiceModelProtocol) -> None:
         """Check if the provided model is valid for this provider.
 
         Args:
             model (VoiceModel): The VoiceModel object to check.
         """
-        if not isinstance(model, VoiceModel):
-            raise TypeError("Model must be a VoiceModel object")
-        if model.provider != self.provider:
+        if model.provider is not self.__class__:
             msg = (
-                f"Model must be compatible with this provider."
-                f"Got '{model.provider}', expected '{self.provider}'"
+                f"Model must be compatible with this provider. "
+                f"Got '{model.provider}', expected '{self.__class__}'"
             )
             raise ValueError(msg)
 
-    def synthesise(self, text: str, model: VoiceModel = None) -> AudioData:
+    def synthesise(self, text: str, model: VoiceModelProtocol) -> AudioData:
         """Synthesise speech from text using the specified VoiceModel object.
 
         Args:
@@ -68,17 +89,12 @@ class Provider:
         """
         # Check input parameters.
         self.check_text(text)
-        if model is None:
-            if self.model is None:
-                raise ValueError("No default voice set for this provider")
-            _logger.debug("Using default voice: %s", self.model.voice)
-            model = self.model
         self.check_model(model)
 
         # Synthesise and return audio data.
         return self._synthesise(text, model)
 
-    def _synthesise(self, text: str, model: VoiceModel) -> AudioData:
+    def _synthesise(self, text: str, model: VoiceModelProtocol) -> AudioData:
         """Stub method for synthesising speech from text using a VoiceModel object.
 
         Subclasses must implement this method and output an AudioData object.

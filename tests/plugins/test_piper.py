@@ -11,8 +11,8 @@ Current tests:
 import pytest
 
 from openvoicepacks.audio import AudioData
-from openvoicepacks.providers import Piper, ProviderError
-from openvoicepacks.voicemodels import VoiceModel
+from openvoicepacks.plugins.piper import Piper
+from openvoicepacks.voicemodel import VoiceModel
 
 
 class TestPiper:
@@ -68,5 +68,5 @@ class TestPiper:
             """Given an invalid voice model ID, download_voice() raises an error."""
             model = piper_model
             model_name = f"{model.language}-{model.voice}_invalid-{model.option}"
-            with pytest.raises(ProviderError):
+            with pytest.raises(ValueError, match="is not available"):
                 piper_tmp.download_voice(model_name)

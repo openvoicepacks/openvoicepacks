@@ -8,9 +8,8 @@ import piper
 import piper.download_voices
 
 from openvoicepacks.audio import AudioData
-from openvoicepacks.providers.base import Provider, ProviderError
-from openvoicepacks.utils import json_from_url
-from openvoicepacks.voicemodels import VoiceModel
+from openvoicepacks.providers import Provider, VoiceModelProtocol
+from openvoicepacks.utils import json_from_url, metadata
 
 _logger = logging.getLogger(__name__)
 
@@ -25,8 +24,13 @@ class Piper(Provider):
             Defaults to '.cache/piper'.
     """
 
+    description: ClassVar[str] = "Piper TTS provider using local ONNX models."
+    version: ClassVar[str] = metadata["version"]
     provider: ClassVar[str] = "piper"
     capabilities: ClassVar[set[str]] = {"text"}
+    default_option: ClassVar[str] = "medium"
+    valid_options: ClassVar[set[str]] = {"x_low", "low", "medium", "high"}
+
     install_dir: str = ".cache/piper"
 
     # TODO: Validate that install_dir base dir exists and is writable.
@@ -72,7 +76,7 @@ class Piper(Provider):
     #             )
     #     return sorted(filtered_list)
 
-    def _synthesise(self, text: str, model: VoiceModel) -> AudioData:
+    def _synthesise(self, text: str, model: VoiceModelProtocol) -> AudioData:
         """Synthesise speech data using Piper TTS service.
 
         Args:
@@ -125,7 +129,7 @@ class Piper(Provider):
         if model_name not in sorted(voices_dict.keys()):
             msg = f'Voice model "{model_name}" is not available.'
             _logger.error(msg)
-            raise ProviderError(msg)
+            raise ValueError(msg)
 
         # Download the voice model
         _logger.info('Downloading voice model "%s".', model_name)

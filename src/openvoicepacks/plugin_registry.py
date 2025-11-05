@@ -15,6 +15,7 @@ import importlib
 import pkgutil
 
 import openvoicepacks.plugins
+from openvoicepacks.providers import Provider
 
 # Registry of providers, keyed by provider name. Import this to access provider list.
 providers = {}
@@ -38,6 +39,21 @@ def register_providers() -> None:
         if hasattr(plugin, "PROVIDER"):
             provider_class = getattr(plugin, "PROVIDER")  # NOQA: B009
             providers[provider_class.provider] = provider_class
+
+
+def get_provider_class(provider: str) -> type[Provider]:
+    """Return the provider class for the given provider name.
+
+    Args:
+        provider (str): Name of the TTS provider.
+    """
+    if provider.lower() in providers:
+        return providers[provider.lower()]
+    if provider == "generic":
+        return Provider
+
+    msg = f"Unknown provider: {provider}, should be one of {list(providers.keys())}"
+    raise ValueError(msg)
 
 
 # Auto-register plugins and providers

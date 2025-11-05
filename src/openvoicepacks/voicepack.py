@@ -14,14 +14,15 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import yaml
-from pydantic import BaseModel, Field, field_validator
+from attr import define, field
 
 from openvoicepacks import template_env
 from openvoicepacks.audio import SoundFile
-from openvoicepacks.voicemodels import VoiceModel
+from openvoicepacks.voicemodel import VoiceModel
 
 
-class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=True):
+@define
+class VoicePack:
     """Represents voice pack configuration for OpenVoicePacks.
 
     This is the main class for voice packs in OpenVoicePacks. It holds metadata about
@@ -42,30 +43,24 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
     """
 
     name: str
-    ovp_schema: int = 1
-    description: str = ""
-    creator: str = ""
-    contact: str = ""
     model: dict | VoiceModel | None = None
-    packname: str = Field(default_factory=lambda data: data["name"].replace(" ", "_"))
-    sounds: dict = Field(default={}, repr=False)
-    creation_date: datetime = Field(default=datetime.now(UTC), repr=False)
-    based_on: list[str] = Field(default=[], repr=False)
+    packname: str = field(
+        converter=staticmethod(
+            lambda v: Path(v.replace(" ", "_").lower()).with_suffix("").name
+        )
+    )
+    ovp_schema: int = field(converter=int, default=1)
+    description: str = field(default="")
+    creator: str = field(default="")
+    contact: str = field(default="")
+    sounds: dict = field(default={}, repr=False)
+    creation_date: datetime = field(default=datetime.now(UTC), repr=False)
+    based_on: list[str] = field(default=[], repr=False)
 
-    @field_validator("packname", mode="after")
-    @classmethod
-    def _packname(cls, v: str) -> str:
-        """Ensure the packname is valid and properly formatted.
-
-        Args:
-            v (str): The packname to validate.
-
-        Returns:
-            str: The validated packname.
-        """
-        v = v.replace(" ", "_").lower()  # Replace spaces with underscores and lowercase
-        p = Path(v)
-        return p.with_suffix("").name  # Ensure no file extension
+    @packname.default
+    def _set_default_packname(self) -> str:
+        """Set the default packname based on the name attribute."""
+        return self.name
 
     def _flatten_sounds(
         self, d: dict, parent_keys: list[str] | None = None
@@ -96,11 +91,7 @@ class VoicePack(BaseModel, validate_assignment=True, arbitrary_types_allowed=Tru
         return items
 
     def worklist(self) -> list[SoundFile]:
-        """Return a flattened list of all sounds in the voice pack.
-
-        Each item is a SoundFile object representing the sound.
-        """
-        # return self._flatten_sounds(self.sounds)
+        """Return a flattened list of all sounds in the voice pack."""
         return self._flatten_sounds(self.sounds)
 
     def yaml(self) -> str:
@@ -188,8 +179,8 @@ def voicepack_from_csv(csv_data: dict) -> VoicePack:
 
     # Check CSV data is in the correct format.
     required_fields = ["Filename", "Path", "Translation"]
-    for field in required_fields:
-        if field not in csv_dict.fieldnames:
+    for f in required_fields:
+        if f not in csv_dict.fieldnames:
             raise ValueError("CSV not formatted correctly")
 
     # Convert the CSV data into the standard OSP format.
@@ -206,7 +197,7 @@ def voicepack_from_csv(csv_data: dict) -> VoicePack:
         else:
             data["sounds"][filename] = string
 
-    return VoicePack.model_validate(data)
+    return VoicePack(**data)
 
 
 def voicepack_from_yaml(yaml_data: dict) -> VoicePack:
@@ -219,4 +210,4 @@ def voicepack_from_yaml(yaml_data: dict) -> VoicePack:
         VoicePack: The converted VoicePack object.
     """
     data = yaml.safe_load(yaml_data)
-    return VoicePack.model_validate(data)
+    return VoicePack(**data)

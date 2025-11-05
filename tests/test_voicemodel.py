@@ -14,94 +14,76 @@ Current tests:
 - Validation of provider, option, and language format.
 """
 
-from copy import deepcopy
+import locale
+from collections.abc import Callable, Generator
 
 import pytest
-from pydantic_core import ValidationError
 
-from openvoicepacks.voicemodels import (
-    PiperVoiceModel,
-    PollyVoiceModel,
-    VoiceModel,
-)
-
-VALID_MODELS = [
-    {
-        "type": PollyVoiceModel,
-        "data": {
-            "voice": "Amy",
-            "language": "en-GB",
-            "provider": "polly",
-            "option": "standard",
-        },
-    },
-    {
-        "type": PiperVoiceModel,
-        "data": {
-            "voice": "Alan",
-            "language": "en_GB",
-            "provider": "piper",
-            "option": "medium",
-        },
-    },
-]
+from openvoicepacks.providers import Provider
+from openvoicepacks.voicemodel import VoiceModel
 
 
-@pytest.fixture(params=VALID_MODELS, ids=[m["type"].__name__ for m in VALID_MODELS])
-def model_config(request: pytest.FixtureRequest) -> dict[str, object]:
-    """Return a valid model config for testing."""
-    return request.param
+@pytest.fixture
+def set_locale() -> Generator[Callable[[str], None]]:
+    """Fixture to temporarily set and restore locale."""
+    orig = locale.setlocale(locale.LC_ALL)
+
+    def _set(new_locale: str) -> None:
+        locale.setlocale(locale.LC_ALL, new_locale)
+
+    yield _set
+    locale.setlocale(locale.LC_ALL, orig)
 
 
 class TestVoiceModel:
-    """Tests for the VoiceModel wrapper class."""
+    """Tests for the VoiceModel class."""
 
-    def test_wrapper(self, model_config: object) -> None:
-        """Given a valid config, wrapper delegates to correct class."""
-        data = deepcopy(model_config["data"])
-        vm = VoiceModel(**data)
-        # Ensure voice is always lowercase in the output
-        data["voice"] = data["voice"].lower()
-        # Check all fields are correctly set
-        assert vm.voice == data["voice"]
-        assert vm.provider == data["provider"]
-        assert vm.option == data["option"]
-        assert vm.language == data["language"]
-        assert isinstance(vm._model, model_config["type"])
-        assert vm.dict() == data
+    def test_full(self) -> None:
+        """Given full valid input, creates VoiceModel."""
+        vm = VoiceModel(
+            provider="generic", voice="Test", language="en_GB", option="standard"
+        )
+        assert vm.provider.__class__ == Provider.__class__
 
-    def test_option(self, model_config: object) -> None:
-        """Given a config without 'option', the correct default is used."""
-        data = deepcopy(model_config["data"])
-        # Remove option from input data to test defaulting
-        option = data["option"]
-        data.pop("option", None)
-        vm = VoiceModel(**data)
-        assert vm.option == option
+    def test_locale(self, set_locale: Callable[[str], None]) -> None:
+        """Given no language, system locale is used."""
+        lang = "en_GB"
+        set_locale(lang)
+        vm = VoiceModel(
+            provider="generic",
+            voice="Test",
+        )
+        assert vm.language == lang
+
+    def test_option(self) -> None:
+        """Given no option, provider default is used."""
+        vm = VoiceModel(
+            provider="generic",
+            voice="Test",
+        )
+        assert vm.option == "standard"
 
 
 class TestVoiceModelValidation:
-    """Tests for validation in the VoiceModel wrapper class."""
+    """Tests for VoiceModel class validation."""
 
     def test_invalid_provider(self) -> None:
         """Given an unknown provider, wrapper raises ValueError."""
         with pytest.raises(ValueError, match="Unknown provider: test"):
-            VoiceModel(
-                voice="test", language="en_GB", provider="test", option="standard"
-            )
+            VoiceModel(voice="test", provider="test")
 
     def test_invalid_option(self) -> None:
-        """Given an invalid option, a ValidationError is raised."""
+        """Given an invalid option, a ValueError is raised."""
         option = "invalid"
         # This only needs to be tested for one provider as each provider
         # inherits from the same base class which performs the validation.
-        with pytest.raises(ValidationError):
-            VoiceModel(voice="Alan", provider="piper", language="en_GB", option=option)
+        with pytest.raises(ValueError, match=f"Invalid option: {option}"):
+            VoiceModel(voice="Test", provider="generic", option=option)
 
     @pytest.mark.parametrize(
-        "language", ["en", "enGB", "en_GB_en", "en--GB", "_GB", "en_"]
+        "language", ["en", "enGB", "en_GB_en", "en--GB", "_GB", "en_", "en_GB.UTF8"]
     )
     def test_invalid_language_format(self, language: str) -> None:
-        """Given an invalid language format, a ValidationError is raised."""
-        with pytest.raises(ValidationError):
-            VoiceModel(voice="Alan", provider="piper", language=language)
+        """Given an invalid language format, a ValueError is raised."""
+        with pytest.raises(ValueError, match="must be in the format"):
+            VoiceModel(voice="Test", provider="generic", language=language)

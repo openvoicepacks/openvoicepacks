@@ -7,14 +7,13 @@ from pathlib import Path
 from pydub import AudioSegment
 
 from openvoicepacks.utils import validate_file_path
-from openvoicepacks.voicemodels import VoiceModel
 
 _logger = logging.getLogger(__name__)
 
 
 @dataclass
 class AudioData:
-    """Encapsulates audio data and its properties for OpenVoicePacks.
+    """Encapsulates audio data and its properties for encoding/decoding.
 
     Args:
         data (bytes): The raw audio byte data.
@@ -78,7 +77,7 @@ class SoundFile:
     path: str
     text: str
     audio: AudioData | None = None
-    voicemodel: VoiceModel | None = None
+    voicemodel: object | None = None
 
     def __repr__(self) -> str:
         """Return a string representation of the SoundFile."""

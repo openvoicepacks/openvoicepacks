@@ -6,8 +6,8 @@ from typing import ClassVar
 import boto3
 
 from openvoicepacks.audio import AudioData
-from openvoicepacks.providers.base import Provider
-from openvoicepacks.voicemodels import VoiceModel
+from openvoicepacks.providers import Provider, VoiceModelProtocol
+from openvoicepacks.utils import metadata
 
 _logger = logging.getLogger(__name__)
 
@@ -17,14 +17,24 @@ class Polly(Provider):
 
     Provides speech synthesis using AWS Polly cloud service.
 
-    Args:
+    Attributes:
         session (boto3.session.Session, optional):
             A boto3 session object. If not provided, a default session is created.
     """
 
+    description: ClassVar[str] = "AWS Polly TTS provider using cloud service."
+    version: ClassVar[str] = metadata["version"]
     provider: ClassVar[str] = "polly"
     capabilities: ClassVar[set[str]] = {"text", "ssml"}
-    session: boto3.session.Session = boto3.session.Session()
+    default_option: ClassVar[str] = "standard"
+    valid_options: ClassVar[set[str]] = {
+        "standard",
+        "neural",
+        "long-form",
+        "generative",
+    }
+
+    session: boto3.session.Session
 
     def __init__(self, session: boto3.session.Session = None) -> None:
         """Initialise the Polly TTS provider.
@@ -33,9 +43,11 @@ class Polly(Provider):
             session (boto3.session.Session, optional):
                 A boto3 session object. If not provided, a default session is created.
         """
-        # Override the default session if one is provided
+        # Use existing session if one is provided, or create a new one
         if session:
             self.session = session
+        else:
+            self.session = boto3.session.Session()
 
         # Authenticate to AWS
         sts = self.session.client("sts")
@@ -43,7 +55,7 @@ class Polly(Provider):
         _logger.info("Authenticated to AWS as '%s'.", caller["Arn"])
         self._client = self.session.client("polly")
 
-    def _synthesise(self, text: str, model: VoiceModel) -> AudioData:
+    def _synthesise(self, text: str, model: VoiceModelProtocol) -> AudioData:
         """Synthesise speech data using AWS Polly.
 
         Args:

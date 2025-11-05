@@ -1,17 +1,23 @@
 """Plugin management for OpenVoicepacks.
 
 This module handles the discovery and registration of plugins.
+
+Each plugin can register one or more TTS providers by defining a PROVIDER attribute
+pointing to a subclass of the Provider base class.
+
+Attributes:
+    providers (dict): A registry of available TTS providers.
 """
 
 # https://packaging.python.org/en/latest/guides/creating-and-discovering-plugins/
 
 import importlib
-import logging
 import pkgutil
 
 import openvoicepacks.plugins
 
-_logger = logging.getLogger(__name__)
+# Registry of providers, keyed by provider name. Import this to access provider list.
+providers = {}
 
 
 def discover_plugins() -> None:
@@ -21,18 +27,6 @@ def discover_plugins() -> None:
         module = importlib.import_module(f"openvoicepacks.plugins.{name}")
         plugins.append(module)
     return plugins
-
-
-def register_provider(name: str, provider: object) -> None:
-    """Register provider from plugins.
-
-    This function allows plugins to self-register their TTS providers.
-
-    Args:
-        name (str): Name of the provider.
-        provider (Provider): Provider class to register.
-    """
-    providers[name] = provider
 
 
 def register_providers() -> None:
@@ -46,8 +40,6 @@ def register_providers() -> None:
             providers[provider_class.provider] = provider_class
 
 
+# Auto-register plugins and providers
 all_plugins = discover_plugins()
-providers = {}
-
-# Auto-register providers from plugins
 register_providers()

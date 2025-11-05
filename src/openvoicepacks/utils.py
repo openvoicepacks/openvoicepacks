@@ -1,12 +1,22 @@
 """Helper functions for OpenVoicePacks.
 
-Includes file path validation, and JSON fetching from URLs.
+Includes metadata, file path validation, and JSON fetching from URLs.
 """
 
 import json
 import os
+from importlib.metadata import metadata as meta
 from pathlib import Path
 from urllib.request import urlopen
+
+# Package metadata, originates from pyproject.toml
+metadata = meta("openvoicepacks").json
+
+# Convert project_url list to a dictionary
+metadata["url"] = {}
+for item in metadata["project_url"]:
+    key, value = item.split(", ", 1)
+    metadata["url"][key] = value
 
 
 def validate_file_path(file_path: str | Path) -> None:

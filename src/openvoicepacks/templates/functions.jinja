@@ -2,19 +2,19 @@
 {{ metadata["name"] }} {{ metadata["version"] }}
 {%- endmacro -%}
 
-{% macro nice_key(key, value, default) %}
+{% macro nice_key(key, value, default, comment) %}
     {%- if value is not defined or value is none or value == '' -%}
-# {{ key }}: {{ default }}
+# {{ key }}: {{ default }} {% if comment -%} # {{ comment }}{%- endif %}
     {%- else -%}
-{{ key }}: {{ value }}
+{{ key }}: {{ value }} {% if comment -%} # {{ comment }}{%- endif %}
     {%- endif -%}
 {% endmacro %}
 
 {% macro model_docs(voicemodel) %}
-  {%- if voicemodel.provider == 'piper' -%}
+  {%- if voicemodel.provider.provider == 'piper' -%}
 # You can find more information about Piper voices here:
 # https://piper.readthedocs.io/en/latest/voices.html
-  {%- elif voicemodel.provider == 'polly' -%}
+  {%- elif voicemodel.provider.provider == 'polly' -%}
 # You can find more information about AWS Polly voices here:
 # https://docs.aws.amazon.com/polly/latest/dg/voicelist.html
   {%- endif -%}

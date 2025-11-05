@@ -15,16 +15,23 @@ name: {{ voicepack.name }}
 
 model: # Model configuration
 {{ f.model_docs(voicepack.model) }}
-    {%- for key, value in voicepack.model.model_dump()| items %}
-    {{ key }}: {{ value }}
-    {%- endfor -%}
-{% endif %}
-
-{%- if voicepack.sounds %}
+    {{ f.nice_key('provider', voicepack.model.provider.provider, "TTS provider.") }}
+    {{ f.nice_key('language', voicepack.model.language, "Language code (e.g. en-US).") }}
+    {{ f.nice_key('voice', voicepack.model.voice, "Voice name.") }}
+    {{ f.nice_key('option', voicepack.model.option, "Provider-specific option for the voice model.") }}
+    {{ f.nice_key('extra', voicepack.model.extra, "Additional options for the provider.") }}
+{%- endif %}
 
 sounds: # Sound definitions.
-# Nested sounds are added to subfolders in the voice pack.
+{%- if voicepack.sounds %}
 {{ f.deep_dict(voicepack.sounds) | indent(4) -}}
+{%- else %}
+    # Sounds can be added here.
+    # For example:
+    # greeting: "Hello, welcome to OpenVoicePacks!"
+    # Or nested in folders:
+    # system:
+    #   error: "An error has occurred."
 {%- endif %}
 
 # Created with {{ f.version() }}

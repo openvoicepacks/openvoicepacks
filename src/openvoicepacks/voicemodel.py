@@ -23,7 +23,7 @@ class VoiceModel:
     voice: str = field(converter=str.lower)
     language: str = field(converter=str)
     option: str = field(converter=str.lower)
-    extras: dict = field(factory=dict)
+    extras: dict | None = field(default=None)
 
     @option.default
     def _set_default_option(self) -> str:

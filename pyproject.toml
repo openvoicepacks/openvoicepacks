@@ -113,6 +113,10 @@ convention = "google"
 "src/openvoicepacks/plugins/*.py" = [
     "INP001", # Allow implicit plugin registration.
 ]
+"src/openvoicepacks/client.py" = [
+    "ARG001", # Allow unused functions as CLI is in development.
+    "FBT001", # Allow boolean positional arguments in CLI.
+]
 
 [tool.coverage.run]
 branch = true

@@ -5,6 +5,7 @@
 
 # Distribution / packaging
 dist/
+requirements.txt
 
 # Reports / testing
 .ruff_cache/

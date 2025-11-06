@@ -56,9 +56,24 @@ def json_from_url(url: str) -> dict | list:
     Raises:
         ValueError: If the URL is invalid or the data cannot be fetched.
     """
-    try:
-        with urlopen(url) as response:  # NOQA: S310
-            return json.load(response)
-    except Exception as e:
-        msg = f"Could not fetch JSON data from URL '{url}': {e}"
-        raise ValueError(msg) from e
+    if not url.startswith(("http:", "https:")):
+        raise ValueError("URL must start with 'http:' or 'https:'")
+
+    with urlopen(url) as response:  # NOQA: S310
+        return json.load(response)
+
+
+def text_from_url(url: str) -> str:
+    """Fetch and return text data from a given URL.
+
+    Args:
+        url (str): The URL to fetch text data from.
+
+    Returns:
+        str: The text data retrieved from the URL.
+    """
+    if not url.startswith(("http:", "https:")):
+        raise ValueError("URL must start with 'http:' or 'https:'")
+
+    with urlopen(url) as response:  # NOQA: S310
+        return response.read().decode("utf-8")

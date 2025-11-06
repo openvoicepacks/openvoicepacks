@@ -36,7 +36,7 @@ class TestJsonFromUrl:
     def test_invalid_url(self, mock_urlopen: MagicMock) -> None:
         """Given an invalid URL, raises ValueError."""
         mock_urlopen.side_effect = Exception("Network error")
-        with pytest.raises(ValueError, match="Could not fetch JSON data"):
+        with pytest.raises(Exception, match="Network error"):
             json_from_url("http://bad-url")
 
     @patch("openvoicepacks.utils.urlopen")
@@ -44,7 +44,7 @@ class TestJsonFromUrl:
         """Given a URL returning non-JSON, raises ValueError."""
         mock_response = io.BytesIO(b"not json")
         mock_urlopen.return_value.__enter__.return_value = mock_response
-        with pytest.raises(ValueError, match="Could not fetch JSON data"):
+        with pytest.raises(json.decoder.JSONDecodeError):
             json_from_url("http://example.com/notjson")
 
 
